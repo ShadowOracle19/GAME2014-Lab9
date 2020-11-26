@@ -211,7 +211,7 @@ public class PlayerBehaviour : MonoBehaviour
         else
         {
             //go to end screen
-            //SceneManager.LoadScene("EndScene");
+            SceneManager.LoadScene("End");
         }
     }
 

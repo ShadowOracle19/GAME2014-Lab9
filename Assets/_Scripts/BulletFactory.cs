@@ -76,8 +76,13 @@ public class BulletFactory
                 tempBullet.GetComponent<BulletController>().damage = 30;
                 break;
         }
-
+        if(gameController == null)
+        {
+            gameController = GameObject.FindObjectOfType<GameController>();
+        }
+        
         tempBullet.transform.parent = gameController.gameObject.transform;
+
         tempBullet.SetActive(false);
 
         return tempBullet;
