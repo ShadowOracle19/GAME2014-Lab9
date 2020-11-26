@@ -30,6 +30,7 @@ public class PlayerBehaviour : MonoBehaviour
     public int maxHealth;
     public int lives;
     public BarController healthBar;
+    public Animator livesHUD;
 
     private Rigidbody2D m_rigidBody2D;
     private SpriteRenderer m_spriteRenderer;
@@ -198,6 +199,9 @@ public class PlayerBehaviour : MonoBehaviour
     public void LoseLife()
     {
         lives -= 1;
+
+        livesHUD.SetInteger("LivesState", lives);
+
         if(lives > 0)
         {
             health = maxHealth;
