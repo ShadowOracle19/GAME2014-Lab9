@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
+[System.Serializable]
 public class PlayerBehaviour : MonoBehaviour
 {
+    [Header("Controls")]
     public Joystick joystick;
     public float joystickHorizontalSensitivity;
     public float joystickVerticalSensitivity;
     public float horizontalForce;
     public float verticalForce;
+
+    [Header("Platform Detection")]
     public bool isGrounded;
     public bool isJumping;
     public bool isCrouching;
@@ -21,14 +25,23 @@ public class PlayerBehaviour : MonoBehaviour
     public RampDirection rampDirection;
     public bool onRamp;
 
+    [Header("Abilities")]
+    public int health;
+    public int maxHealth;
+    public int lives;
+    public BarController healthBar;
+
     private Rigidbody2D m_rigidBody2D;
     private SpriteRenderer m_spriteRenderer;
     private Animator m_animator;
     private RaycastHit2D groundHit;
-
+    
     // Start is called before the first frame update
     void Start()
     {
+        health = 100;
+        maxHealth = 100;
+        lives = 3;
         m_rigidBody2D = GetComponent<Rigidbody2D>();
         m_spriteRenderer = GetComponent<SpriteRenderer>();
         m_animator = GetComponent<Animator>();
@@ -165,7 +178,47 @@ public class PlayerBehaviour : MonoBehaviour
         // respawn
         if (other.gameObject.CompareTag("DeathPlane"))
         {
+            LoseLife();
+        }
+
+        if(other.gameObject.CompareTag("Bullet"))
+        {
+            TakeDamage(10);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(15);
+        }
+    }
+
+    public void LoseLife()
+    {
+        lives -= 1;
+        if(lives > 0)
+        {
+            health = maxHealth;
+            healthBar.SetValue(health);
             transform.position = spawnPoint.position;
+        }
+        else
+        {
+            //go to end screen
+            //SceneManager.LoadScene("EndScene");
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        healthBar.SetValue(health);
+
+        if(health <= 0)
+        {
+            LoseLife();
         }
     }
 }
